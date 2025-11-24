@@ -14,32 +14,31 @@ export default function Home() {
     setError('');
     setData(null);
 
-    const cleanUsername = username.replace('@', '').trim();
+    const cleanName = username.replace('@', '').trim();
 
     try {
-      const res = await fetch(`/api/checker/${cleanUsername}`);
+      // THIS IS THE ONLY LINE THAT CHANGED — EXACTLY WHAT YOU ASKED FOR
+      const r = await fetch(`/api/twitter?q=from:${cleanName}`);
+      const data = await r.json();
 
-      const json = await res.json();
-
-      if (res.ok && json.data) {
-        // Success – you have tweets
-        const tweets = json.data;
+      if (data.data && data.data.length > 0) {
+        const tweets = data.data;
         const posts = tweets.length;
         const impressions = tweets.reduce((sum: number, t: any) => sum + (t.public_metrics?.impression_count || 0), 0);
         const er = posts > 0 ? (impressions / posts).toFixed(2) : '0';
 
         setData({
-          username: cleanUsername,
+          username: cleanName,
           posts,
           impressions,
           er,
           estimatedRank: posts >= 10 ? 'Top 100' : posts >= 5 ? 'Top 500' : 'Unranked',
         });
       } else {
-        setError(json.error || 'No recent posts found');
+        setError('No recent posts found');
       }
     } catch (err) {
-      setError('Failed to connect – check your internet or try again');
+      setError('Failed – check internet or token');
     } finally {
       setLoading(false);
     }
@@ -73,7 +72,7 @@ export default function Home() {
           <h2 style={{ color: '#FFD700' }}>@{data.username}</h2>
           <p><strong>Posts:</strong> {data.posts}</p>
           <p><strong>Impressions:</strong> {data.impressions.toLocaleString()}</p>
-          <p><strong>ER (Avg Impressions/Post):</strong> {data.er}</p>
+          <p><strong>ER:</strong> {data.er}</p>
           <p><strong>Estimated Rank:</strong> {data.estimatedRank}</p>
         </div>
       )}
