@@ -33,10 +33,10 @@ export default function Home() {
   return (
     <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
       <h1 style={{ color: '#000' }}>Zama Season 4 Rank Checker 🟨🔒</h1>
-      <p style={{ color: '#000' }}>Public tool — type ANY @username to check their real-time Zama stats!</p>
+      <p style={{ color: '#000' }}>Type your @username to check your real-time Zama stats!</p>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <input
-          placeholder="e.g., barudkhanweb3"
+          placeholder="e.g. barudkhanweb3"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={{ padding: '12px', width: '300px', border: '1px solid #ccc', borderRadius: '8px 0 0 8px' }}
