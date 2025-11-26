@@ -1,17 +1,29 @@
-export async function GET(req) {
-  const token = process.env.TWITTER_BEARER;
-  const { searchParams } = new URL(req.url);
-  const query = searchParams.get("q") || "crypto";
+import { NextResponse } from "next/server";
 
-  const r = await fetch(
-    `https://api.twitter.com/2/tweets/search/recent?query=${query}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export async function GET() {
+  try {
+    const bearer = process.env.TWITTER_BEARER;
+
+    if (!bearer) {
+      return NextResponse.json(
+        { error: "Twitter bearer token missing" },
+        { status: 500 }
+      );
     }
-  );
 
-  const data = await r.json();
-  return new Response(JSON.stringify(data), { status: 200 });
+    // Change the endpoint if needed
+    const response = await fetch(
+      "https://api.twitter.com/2/users/by/username/zama",
+      {
+        headers: {
+          Authorization: `Bearer ${bearer}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
